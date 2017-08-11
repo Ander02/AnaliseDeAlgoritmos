@@ -1,18 +1,20 @@
 package com.anderson.algoritmos;
 
+import java.util.Arrays;
+
 /**
  *
  * @author Anderson
  */
 public class MochilaGulosa {
 
-    static int[] valores = {1, 8, 7};
-    static int[] pesos = {1, 4, 1};
-    static int pesoMaximo = 3;
+    static int[] valores = {10, 8, 3};
+    static int[] pesos = {3, 2, 1};
+    static int pesoMaximo = 4;
 
     //Otimizar o peso em relação ao valor dos itens
     public static boolean[] problemaDaMochila(int[] valoresItens, int[] pesosItens, int pesoMaximo, boolean[] solucaoAnterior) {
-                
+
         if (valoresItens.length == pesosItens.length) {
 
             int pesoAcumulado = 0;
@@ -50,27 +52,30 @@ public class MochilaGulosa {
                     pesosItens[indiceMelhorOpcao] *= -1;
                     valoresItens[indiceMelhorOpcao] *= -1;
 
-                } else if (solucaoAnterior != null) {
+                } else if (solucaoAnterior != null ) {
                     int valorAcumuladoSolucaoAnterior = 0;
                     for (int j = 0; j < solucaoAnterior.length; j++) {
-
                         if (solucaoAnterior[j] == true) {
                             valorAcumuladoSolucaoAnterior += valoresItens[j];
                         }
                     }
-                    if (valorAcumulado > valorAcumuladoSolucaoAnterior) {
+                    valorAcumuladoSolucaoAnterior *= -1;
+
+                    if (valorAcumulado <= valorAcumuladoSolucaoAnterior) {
                         valorAcumulado = valorAcumuladoSolucaoAnterior;
+                        solucao = solucaoAnterior;
+                    } else {
+                        System.out.println("Chamada Recursiva");
+                        problemaDaMochila(valoresItens, pesosItens, pesoMaximo, solucao);
                     }
                 } else {
                     problemaDaMochila(valoresItens, pesosItens, pesoMaximo, solucao);
-                } //se o item não cabe na mochila, verifique o valor e troque esse item de lugar com outro
+                }
                 i--;
             }
-
             System.out.println("Peso Acumulado: " + pesoAcumulado);
             System.out.println("Valor Acumulado: " + valorAcumulado);
-                    System.out.println("AAAAAAAAAAAAAAAAAAAAA");
-
+            System.out.println("");
             return solucao;
         }
 
