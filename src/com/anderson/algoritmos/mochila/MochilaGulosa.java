@@ -1,6 +1,4 @@
-package com.anderson.algoritmos;
-
-import java.util.Arrays;
+package com.anderson.algoritmos.mochila;
 
 /**
  *
@@ -8,12 +6,12 @@ import java.util.Arrays;
  */
 public class MochilaGulosa {
 
-    static int[] valores = {10, 8, 3};
-    static int[] pesos = {3, 2, 1};
+    static int[] valores = {12, 8, 3};
+    static int[] pesos = {4, 2, 2};
     static int pesoMaximo = 4;
 
     //Otimizar o peso em relação ao valor dos itens
-    public static boolean[] problemaDaMochila(int[] valoresItens, int[] pesosItens, int pesoMaximo, boolean[] solucaoAnterior) {
+    public static boolean[] problemaDaMochila(int[] valoresItens, int[] pesosItens, int pesoMaximo) {
 
         if (valoresItens.length == pesosItens.length) {
 
@@ -23,15 +21,15 @@ public class MochilaGulosa {
             int quantidadeDeItens = valoresItens.length;
             boolean[] solucao = new boolean[quantidadeDeItens];
 
-            int i = quantidadeDeItens - 1;
+            int i = 0;
             //Enquanto a mochila ainda tem espaço e não percorreu todos os itens
-            while (pesoAcumulado < pesoMaximo && i >= 0) {
+            while (pesoAcumulado < pesoMaximo && i < quantidadeDeItens) {
 
                 double densidadeMelhorOpcao = 0;
                 int indiceMelhorOpcao = 0;
 
                 //seleciona a melhor opcao
-                for (int j = 0; j < pesosItens.length; j++) {
+                for (int j = 0; j < quantidadeDeItens; j++) {
                     if (pesosItens[j] > 0 && valoresItens[j] > 0) {
                         double densidadeValorPeso = (double) valoresItens[j] / pesosItens[j];
                         if (densidadeValorPeso >= densidadeMelhorOpcao) {
@@ -43,35 +41,20 @@ public class MochilaGulosa {
 
                 //se o item cabe na mochila e é válido
                 if (pesosItens[indiceMelhorOpcao] <= (pesoMaximo - pesoAcumulado) && pesosItens[indiceMelhorOpcao] > 0) {
-                    solucao[indiceMelhorOpcao] = true;
 
+                    solucao[indiceMelhorOpcao] = true;
                     pesoAcumulado += pesosItens[indiceMelhorOpcao];
                     valorAcumulado += valoresItens[indiceMelhorOpcao];
 
-                    //torna essa opção inválida para próximas consultas
+                    //torna essa opção inválida pois já foi adicionada
                     pesosItens[indiceMelhorOpcao] *= -1;
                     valoresItens[indiceMelhorOpcao] *= -1;
-
-                } else if (solucaoAnterior != null ) {
-                    int valorAcumuladoSolucaoAnterior = 0;
-                    for (int j = 0; j < solucaoAnterior.length; j++) {
-                        if (solucaoAnterior[j] == true) {
-                            valorAcumuladoSolucaoAnterior += valoresItens[j];
-                        }
-                    }
-                    valorAcumuladoSolucaoAnterior *= -1;
-
-                    if (valorAcumulado <= valorAcumuladoSolucaoAnterior) {
-                        valorAcumulado = valorAcumuladoSolucaoAnterior;
-                        solucao = solucaoAnterior;
-                    } else {
-                        System.out.println("Chamada Recursiva");
-                        problemaDaMochila(valoresItens, pesosItens, pesoMaximo, solucao);
-                    }
                 } else {
-                    problemaDaMochila(valoresItens, pesosItens, pesoMaximo, solucao);
+                    //torna essa opção inválida pois não cabe na mochila
+                    pesosItens[indiceMelhorOpcao] *= -1;
+                    valoresItens[indiceMelhorOpcao] *= -1;
                 }
-                i--;
+                i++;
             }
             System.out.println("Peso Acumulado: " + pesoAcumulado);
             System.out.println("Valor Acumulado: " + valorAcumulado);
@@ -85,7 +68,7 @@ public class MochilaGulosa {
 
     public static void main(String[] args) {
 
-        boolean[] resp = problemaDaMochila(valores, pesos, pesoMaximo, null);
+        boolean[] resp = problemaDaMochila(valores, pesos, pesoMaximo);
 
         for (int i = 0; i < resp.length; i++) {
             System.out.println(i + " " + resp[i]);
